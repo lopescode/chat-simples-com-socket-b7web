@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, "public")))
 server.listen(port)
 console.log(`Servidor rodando na porta ${port}`);
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: any) => {
     console.log("Conexão estabelecida...");
-    
+
 })
