@@ -54,7 +54,12 @@ function addMessage(type, user, message) {
       ul.innerHTML += `<li class="m-status">${message}</li>`;
       break;
     case "message":
-      ul.innerHTML += `<li class="m-txt"><span>${user}:</span> ${message}</li>`;
+      if(username === user){
+        ul.innerHTML += `<li class="m-txt"><span class="fromMe">${user}:</span> ${message}</li>`;
+      }
+      else {
+        ul.innerHTML += `<li class="m-txt"><span>${user}:</span> ${message}</li>`;
+      }
       break;
   }
 }
@@ -84,4 +89,22 @@ socket.on("list-update", (data) => {
 
 socket.on("show-message", (data) => {
   addMessage("message", data.username.username, data.message)
+})
+
+socket.on("disconnect", () => {
+  addMessage("status", null, "Você foi desconectado!");
+  userList = [];
+  renderUserList();
+})
+
+socket.on("connect_error", () => {
+  addMessage("status", null, "Tentando reconectar...")
+})
+
+socket.on("connect", () => {
+  addMessage("status", null, "Reconectado!");
+
+  if(username !== "") {
+    socket.emit("join-request", {username: username})
+  }
 })
