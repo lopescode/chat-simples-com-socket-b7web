@@ -1,0 +1,20 @@
+{
+  "name": "chat-simples-com-socket-b7web",
+  "version": "1.0.0",
+  "description": "Chat simples utilizando Socket",
+  "main": "src/server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-dev": "nodemon -e ts src/server.ts"
+  },
+  "author": "leonardo@krolik.com.br",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^16.10.2"
+  }
+}
