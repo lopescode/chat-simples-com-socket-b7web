@@ -25,6 +25,18 @@ loginNameInput.addEventListener("keyup", (e) => {
   }
 });
 
+chatTextInput.addEventListener("keyup", (e) => {
+  if (e.keyCode === 13) {
+    let message = chatTextInput.value.trim();
+    chatTextInput.value = "";
+
+    if(message != "") {
+      addMessage("message", username, message);
+      socket.emit("send-message", message);
+    }
+  }
+})
+
 function renderUserList() {
   let ul = document.querySelector(".userList");
   ul.innerHTML = "";
@@ -32,6 +44,19 @@ function renderUserList() {
   userList.forEach((i) => {
     ul.innerHTML += `<li>${i.username}</li`;
   });
+}
+
+function addMessage(type, user, message) {
+  let ul = document.querySelector(".chatList");
+
+  switch (type) {
+    case "status":
+      ul.innerHTML += `<li class="m-status">${message}</li>`;
+      break;
+    case "message":
+      ul.innerHTML += `<li class="m-txt"><span>${user}:</span> ${message}</li>`;
+      break;
+  }
 }
 
 socket.on("user-ok", (list) => {
@@ -45,19 +70,6 @@ socket.on("user-ok", (list) => {
   renderUserList();
 });
 
-function addMessage(type, user, message) {
-  let ul = document.querySelector(".chatList");
-
-  switch (type) {
-    case "status":
-      ul.innerHTML += `<li class="m-status">${message}</li>`;
-      break;
-    case "message":
-      ul.innerHTML += `<li class="m-txt"><span>${user}</span></li>`;
-      break;
-  }
-}
-
 socket.on("list-update", (data) => {
   if(data.joined) {
     addMessage("status", null, `${data.joined.username} entrou no chat!`)
@@ -69,3 +81,7 @@ socket.on("list-update", (data) => {
   userList = data.list;
   renderUserList();
 });
+
+socket.on("show-message", (data) => {
+  addMessage("message", data.username.username, data.message)
+})

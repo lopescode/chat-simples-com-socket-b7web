@@ -25,7 +25,6 @@ io.on("connection", (socket: any) => {
   socket.on("join-request", (username: any) => {
     socket.username = username;
     connectedUsers.push(username);
-    console.log(connectedUsers);
 
     socket.emit("user-ok", connectedUsers);
     socket.broadcast.emit("list-update", {
@@ -36,11 +35,18 @@ io.on("connection", (socket: any) => {
 
   socket.on("disconnect", () => {
     connectedUsers = connectedUsers.filter((u: any) => u != socket.username);
-    console.log(connectedUsers);
 
     socket.broadcast.emit("list-update", {
       left: socket.username,
       list: connectedUsers,
     })
+  })
+
+  socket.on("send-message", (message: any) => {
+      let object = {
+        username: socket.username,
+        message: message,
+      }
+      socket.broadcast.emit("show-message", object);
   })
 });
