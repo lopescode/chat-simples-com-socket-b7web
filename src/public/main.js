@@ -29,23 +29,43 @@ function renderUserList() {
   let ul = document.querySelector(".userList");
   ul.innerHTML = "";
 
-  userList.forEach(i => {
-    ul.innerHTML += `<li>${i.username}</li`
-  })
+  userList.forEach((i) => {
+    ul.innerHTML += `<li>${i.username}</li`;
+  });
 }
 
 socket.on("user-ok", (list) => {
-  loginPage.style.display = "none"
-  chatPage.style.display = "flex"
+  loginPage.style.display = "none";
+  chatPage.style.display = "flex";
   chatTextInput.focus();
+
+  addMessage("status", null, "Conectado!");
 
   userList = list;
   renderUserList();
+});
 
-})
+function addMessage(type, user, message) {
+  let ul = document.querySelector(".chatList");
+
+  switch (type) {
+    case "status":
+      ul.innerHTML += `<li class="m-status">${message}</li>`;
+      break;
+    case "message":
+      ul.innerHTML += `<li class="m-txt"><span>${user}</span></li>`;
+      break;
+  }
+}
 
 socket.on("list-update", (data) => {
+  if(data.joined) {
+    addMessage("status", null, `${data.joined.username} entrou no chat!`)
+  }
+  if(data.left) {
+    addMessage("status", null, `${data.left.username} saiu do chat!`)
+  }
 
   userList = data.list;
   renderUserList();
-})
+});
