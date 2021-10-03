@@ -12,12 +12,21 @@ const app = express();
 const server = require("http").createServer(app);
 const io = socketIO(server);
 
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")));
 
-server.listen(port)
+server.listen(port);
 console.log(`Servidor rodando na porta ${port}`);
 
-io.on('connection', (socket: any) => {
-    console.log("Conexão estabelecida...");
+let connectedUsers: any = [];
 
-})
+io.on("connection", (socket: any) => {
+  console.log("Conexão estabelecida...");
+
+  socket.on("join-request", (username: any) => {
+    socket.username = username;
+    connectedUsers.push(username);
+    console.log(connectedUsers);
+
+    socket.emit("user-ok", connectedUsers);
+  });
+});
